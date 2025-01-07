@@ -13,12 +13,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Add remote 
+
+      - name: Set up Hugging Face credentials
         env:
-          HF: ${{ secrets.HG }}
+          HF_TOKEN: ${{ secrets.HG }}
+        run: |
+          git config --global credential.helper store
+          echo "https://huggingface.co:$HF_TOKEN@huggingface.co" > ~/.git-credentials
+
+      - name: Add remote
         run: git remote add space https://huggingface.co/spaces/manahilhassan9603/demo
 
       - name: Push to hub
-        env:
-          HF: ${{ secrets.HG }}
-        run: git push --force https://huggingface.co/spaces/manahilhassan9603/demo main
+        run: git push --force space main
